@@ -13,6 +13,9 @@ const comments = ref([]);
 const commentBody = ref('');
 const commentLoading = ref(false);
 const commentError = ref('');
+const likesCount = ref(0);
+const liked = ref(false);
+const likeLoading = ref(false);
 
 const fetchPost = async () => {
   post.value = await $fetch(`${config.public.apiBase}/posts/${id.value}`, {
@@ -39,9 +42,24 @@ const fetchComments = async () => {
   );
 };
 
+const fetchLikes = async () => {
+  const response: any = await $fetch(
+    `${config.public.apiBase}/posts/${id.value}/likes`,
+    {
+      headers: {
+        Accept: 'application/json',
+        ...(token.value ? { Authorization: `Bearer ${token.value}` } : {}),
+      },
+    },
+  );
+  likesCount.value = response.likes_count;
+  liked.value = response.liked;
+};
+
 await fetchPost();
 await fetchCurrentUser();
 await fetchComments();
+await fetchLikes();
 
 const handleDelete = async () => {
   if (!confirm('本当に削除しますか？')) return;
@@ -71,6 +89,25 @@ const handleCommentDelete = async (commentId: number) => {
   if (!confirm('コメントを削除しますか？')) return;
   await api(`/posts/${id.value}/comments/${commentId}`, { method: 'DELETE' });
   await fetchComments();
+};
+
+const handleLike = async () => {
+  if (!isLoggedIn.value) {
+    router.push('/login');
+    return;
+  }
+  likeLoading.value = true;
+  try {
+    const response: any = await api(`/posts/${id.value}/likes`, {
+      method: 'POST',
+    });
+    likesCount.value = response.likes_count;
+    liked.value = response.liked;
+  } catch (e) {
+    console.error('いいねに失敗しました', e);
+  } finally {
+    likeLoading.value = false;
+  }
 };
 
 const isOwner = computed(() => {
@@ -113,6 +150,22 @@ const isOwner = computed(() => {
             {{ post?.description }}
           </p>
 
+          <!-- いいねボタン -->
+          <div class="flex items-center gap-4 mb-6">
+            <button
+              @click="handleLike"
+              :disabled="likeLoading"
+              :class="[
+                'flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition disabled:opacity-50',
+                liked
+                  ? 'bg-red-500 hover:bg-red-600 text-white'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-600',
+              ]"
+            >
+              {{ liked ? '❤️' : '🤍' }} {{ likesCount }}
+            </button>
+          </div>
+
           <div v-if="isOwner" class="flex gap-3">
             <NuxtLink
               :to="`/posts/${id}/edit`"
@@ -136,7 +189,6 @@ const isOwner = computed(() => {
           コメント ({{ comments.length }})
         </h2>
 
-        <!-- コメント投稿フォーム -->
         <div v-if="isLoggedIn" class="mb-6">
           <div
             v-if="commentError"
@@ -168,7 +220,6 @@ const isOwner = computed(() => {
           </p>
         </div>
 
-        <!-- コメント一覧 -->
         <div
           v-if="comments.length === 0"
           class="text-center text-gray-400 py-4"
