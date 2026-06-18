@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./backend
+    container_name: laravel_app
+    volumes:
+      - ./backend:/var/www
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - '8080:80'
+    volumes:
+      - ./backend:/var/www
+      - ./backend/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: jisui_db
+      POSTGRES_USER: jisui_user
+      POSTGRES_PASSWORD: secret
+    ports:
+      - '5433:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U jisui_user -d jisui_db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build: ./frontend
+    container_name: nuxt_app
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NUXT_PUBLIC_API_BASE=http://localhost:8080/api
+      - NUXT_API_BASE=http://nginx/api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:
