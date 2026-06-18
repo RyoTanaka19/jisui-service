@@ -41,6 +41,11 @@ class User extends Authenticatable implements CanResetPasswordContract
         return $this->is_admin === true;
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->email === env('SUPER_ADMIN_EMAIL');
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -59,6 +64,21 @@ class User extends Authenticatable implements CanResetPasswordContract
     public function events()
     {
         return $this->belongsToMany(Event::class, 'event_participants');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class)->latest();
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id')->latest();
     }
 
     public function sendPasswordResetNotification($token)

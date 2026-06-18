@@ -2,15 +2,19 @@
 const { isLoggedIn, logout } = useAuth();
 const token = useCookie('auth_token');
 const profileAvatar = ref('');
+const currentUserData = ref(null);
+const { unreadMessageCount, fetchUnreadMessageCount } = useNotification();
 
 onMounted(async () => {
   await fetchPosts();
   if (token.value) {
     try {
-      const user: any = await $fetch(`${config.public.apiBase}/profile`, {
+      const user: any = await $fetch(`${config.public.apiBase}/me`, {
         headers: { Authorization: `Bearer ${token.value}` },
       });
       profileAvatar.value = user.avatar_url || '';
+      currentUserData.value = user;
+      await fetchUnreadMessageCount();
     } catch (e) {}
   }
 });
@@ -86,6 +90,25 @@ const handleLogout = async () => {
             >
               ＋ 投稿する
             </NuxtLink>
+            <NuxtLink
+              v-if="currentUserData?.is_admin"
+              to="/admin"
+              class="text-sm text-purple-500 hover:text-purple-700 font-semibold"
+            >
+              管理者画面
+            </NuxtLink>
+
+            <!-- メッセージアイコン -->
+            <NuxtLink to="/messages" class="relative">
+              <span class="text-xl">✉️</span>
+              <span
+                v-if="unreadMessageCount > 0"
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center"
+              >
+                {{ unreadMessageCount }}
+              </span>
+            </NuxtLink>
+
             <NuxtLink to="/profile">
               <img
                 v-if="profileAvatar"
