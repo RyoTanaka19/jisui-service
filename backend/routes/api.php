@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 // 認証不要
@@ -12,6 +13,9 @@ Route::post('/login',    [AuthController::class, 'login']);
 // 投稿一覧・詳細は認証不要
 Route::get('/posts',        [PostController::class, 'index']);
 Route::get('/posts/{post}', [PostController::class, 'show']);
+
+// コメント一覧は認証不要
+Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
 
 // 認証必要
 Route::middleware('auth:sanctum')->group(function () {
@@ -25,4 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // 画像アップロード
     Route::post('/upload', [ImageController::class, 'upload']);
+
+    // コメント
+    Route::post('/posts/{post}/comments',             [CommentController::class, 'store']);
+    Route::delete('/posts/{post}/comments/{comment}', [CommentController::class, 'destroy']);
 });
