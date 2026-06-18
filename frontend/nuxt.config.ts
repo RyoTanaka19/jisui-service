@@ -11,11 +11,12 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // サーバーサイド用 (Docker内部通信)
-    apiBase: process.env.NUXT_API_BASE || 'http://nginx/api',
+    apiBase:
+      process.env.NUXT_API_BASE || 'https://jisui-backend.onrender.com/api',
     public: {
-      // クライアントサイド用 (ブラウザからのアクセス)
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080/api',
+      apiBase:
+        process.env.NUXT_PUBLIC_API_BASE ||
+        'https://jisui-backend.onrender.com/api',
     },
   },
 });
