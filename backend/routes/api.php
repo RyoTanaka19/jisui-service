@@ -8,6 +8,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
 
 // 認証不要
@@ -32,15 +33,19 @@ Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
 // いいね状態の取得は認証不要
 Route::get('/posts/{post}/likes', [LikeController::class, 'index']);
 
+// イベント一覧・詳細は認証不要
+Route::get('/events',          [EventController::class, 'index']);
+Route::get('/events/{event}',  [EventController::class, 'show']);
+
 // 認証必要
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me',      [AuthController::class, 'me']);
 
     // プロフィール
-    Route::get('/profile',              [ProfileController::class, 'show']);
-    Route::put('/profile',              [ProfileController::class, 'update']);
-    Route::post('/profile/avatar',      [ProfileController::class, 'uploadAvatar']);
+    Route::get('/profile',         [ProfileController::class, 'show']);
+    Route::put('/profile',         [ProfileController::class, 'update']);
+    Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar']);
 
     // 投稿CRUD
     Route::post('/posts',          [PostController::class, 'store']);
@@ -56,4 +61,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // いいね
     Route::post('/posts/{post}/likes', [LikeController::class, 'toggle']);
+
+    // イベント管理（管理者のみ）
+    Route::post('/events',           [EventController::class, 'store']);
+    Route::put('/events/{event}',    [EventController::class, 'update']);
+    Route::delete('/events/{event}', [EventController::class, 'destroy']);
+
+    // イベント参加
+    Route::post('/events/{event}/join', [EventController::class, 'join']);
+    Route::get('/events/joined',        [EventController::class, 'joined']);
 });

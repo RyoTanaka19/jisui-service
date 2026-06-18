@@ -69,7 +69,15 @@ const handleLogout = async () => {
       <div
         class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between"
       >
-        <h1 class="text-xl font-bold text-green-600">🍳 自炊サービス</h1>
+        <div class="flex items-center gap-4">
+          <h1 class="text-xl font-bold text-green-600">🍳 自炊サービス</h1>
+          <NuxtLink
+            to="/events"
+            class="text-sm text-gray-500 hover:text-green-600 transition"
+          >
+            イベント
+          </NuxtLink>
+        </div>
         <div class="flex items-center gap-3">
           <template v-if="isLoggedIn">
             <NuxtLink
