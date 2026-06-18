@@ -3,6 +3,7 @@ definePageMeta({ middleware: 'guest' });
 
 const { login } = useAuth();
 const router = useRouter();
+const route = useRoute();
 const config = useRuntimeConfig();
 
 const form = reactive({
@@ -10,7 +11,19 @@ const form = reactive({
   password: '',
 });
 const error = ref('');
+const success = ref('');
 const loading = ref(false);
+
+// パスワードリセット成功時のメッセージ
+onMounted(() => {
+  if (route.query.reset === 'success') {
+    success.value =
+      'パスワードをリセットしました。新しいパスワードでログインしてください。';
+  }
+  if (route.query.error === 'google_auth_failed') {
+    error.value = 'Googleログインに失敗しました。もう一度お試しください。';
+  }
+});
 
 const handleLogin = async () => {
   error.value = '';
@@ -36,6 +49,13 @@ const handleGoogleLogin = () => {
       <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
         🍳 ログイン
       </h1>
+
+      <div
+        v-if="success"
+        class="bg-green-50 text-green-600 rounded-lg p-3 mb-4 text-sm"
+      >
+        {{ success }}
+      </div>
 
       <div
         v-if="error"
@@ -71,7 +91,7 @@ const handleGoogleLogin = () => {
         />
       </div>
 
-      <div class="mb-6">
+      <div class="mb-2">
         <label class="block text-sm font-medium text-gray-700 mb-1"
           >パスワード</label
         >
@@ -81,6 +101,15 @@ const handleGoogleLogin = () => {
           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           placeholder="********"
         />
+      </div>
+
+      <div class="text-right mb-6">
+        <NuxtLink
+          to="/forgot-password"
+          class="text-sm text-green-500 hover:underline"
+        >
+          パスワードをお忘れですか？
+        </NuxtLink>
       </div>
 
       <button
