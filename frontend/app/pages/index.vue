@@ -5,11 +5,14 @@ const config = useRuntimeConfig();
 
 const posts = ref(null);
 const searchQuery = ref('');
+const currentPage = ref(1);
 
-const fetchPosts = async (search = '') => {
+const fetchPosts = async (search = '', page = 1) => {
   try {
-    const params = search ? `?search=${encodeURIComponent(search)}` : '';
-    const response = await $fetch(`${config.public.apiBase}/posts${params}`, {
+    let url = `${config.public.apiBase}/posts?page=${page}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+
+    const response = await $fetch(url, {
       headers: { Accept: 'application/json' },
       cache: 'no-cache',
     });
@@ -24,12 +27,20 @@ onMounted(async () => {
 });
 
 const handleSearch = async () => {
-  await fetchPosts(searchQuery.value);
+  currentPage.value = 1;
+  await fetchPosts(searchQuery.value, 1);
 };
 
 const clearSearch = async () => {
   searchQuery.value = '';
+  currentPage.value = 1;
   await fetchPosts();
+};
+
+const goToPage = async (page: number) => {
+  currentPage.value = page;
+  await fetchPosts(searchQuery.value, page);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 const handleLogout = async () => {
@@ -135,6 +146,47 @@ const handleLogout = async () => {
           </div>
         </NuxtLink>
       </div>
+
+      <!-- ページネーション -->
+      <div
+        v-if="posts?.last_page > 1"
+        class="flex justify-center items-center gap-2 mt-8"
+      >
+        <button
+          @click="goToPage(currentPage - 1)"
+          :disabled="currentPage === 1"
+          class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+        >
+          ← 前へ
+        </button>
+
+        <button
+          v-for="page in posts?.last_page"
+          :key="page"
+          @click="goToPage(page)"
+          :class="[
+            'px-4 py-2 rounded-lg border transition',
+            currentPage === page
+              ? 'bg-green-500 border-green-500 text-white'
+              : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50',
+          ]"
+        >
+          {{ page }}
+        </button>
+
+        <button
+          @click="goToPage(currentPage + 1)"
+          :disabled="currentPage === posts?.last_page"
+          class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+        >
+          次へ →
+        </button>
+      </div>
+
+      <!-- 投稿数表示 -->
+      <p v-if="posts?.total" class="text-center text-gray-400 text-sm mt-4">
+        全{{ posts.total }}件中 {{ posts.from }}〜{{ posts.to }}件を表示
+      </p>
     </main>
   </div>
 </template>
