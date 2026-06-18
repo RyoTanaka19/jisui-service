@@ -7,10 +7,20 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    // 一覧
-    public function index()
+    // 一覧・検索
+    public function index(Request $request)
     {
-        $posts = Post::with('user')->latest()->paginate(10);
+        $query = Post::with('user')->latest();
+
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $posts = $query->paginate(10);
         return response()->json($posts);
     }
 

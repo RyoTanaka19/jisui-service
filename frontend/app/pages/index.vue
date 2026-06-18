@@ -4,11 +4,14 @@ const router = useRouter();
 const config = useRuntimeConfig();
 
 const posts = ref(null);
+const searchQuery = ref('');
 
-const fetchPosts = async () => {
+const fetchPosts = async (search = '') => {
   try {
-    const response = await $fetch(`${config.public.apiBase}/posts`, {
+    const params = search ? `?search=${encodeURIComponent(search)}` : '';
+    const response = await $fetch(`${config.public.apiBase}/posts${params}`, {
       headers: { Accept: 'application/json' },
+      cache: 'no-cache',
     });
     posts.value = response;
   } catch (e) {
@@ -16,7 +19,18 @@ const fetchPosts = async () => {
   }
 };
 
-await fetchPosts();
+onMounted(async () => {
+  await fetchPosts();
+});
+
+const handleSearch = async () => {
+  await fetchPosts(searchQuery.value);
+};
+
+const clearSearch = async () => {
+  searchQuery.value = '';
+  await fetchPosts();
+};
 
 const handleLogout = async () => {
   await logout();
@@ -63,8 +77,35 @@ const handleLogout = async () => {
     <main class="max-w-4xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold text-gray-800 mb-6">みんなのレシピ</h2>
 
+      <!-- 検索フォーム -->
+      <div class="flex gap-2 mb-6">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="レシピを検索..."
+          class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+          @keyup.enter="handleSearch"
+        />
+        <button
+          @click="handleSearch"
+          class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-lg transition"
+        >
+          検索
+        </button>
+        <button
+          v-if="searchQuery"
+          @click="clearSearch"
+          class="bg-gray-200 hover:bg-gray-300 text-gray-600 font-semibold px-4 py-2 rounded-lg transition"
+        >
+          クリア
+        </button>
+      </div>
+
       <div v-if="!posts?.data?.length" class="text-center text-gray-400 py-12">
-        まだ投稿がありません
+        <p v-if="searchQuery">
+          「{{ searchQuery }}」に一致するレシピが見つかりませんでした
+        </p>
+        <p v-else>まだ投稿がありません</p>
       </div>
 
       <div class="grid gap-4">
