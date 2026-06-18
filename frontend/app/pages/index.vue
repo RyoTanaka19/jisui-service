@@ -72,18 +72,25 @@ const handleLogout = async () => {
           v-for="post in posts?.data"
           :key="post.id"
           :to="`/posts/${post.id}`"
-          class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 block"
+          class="bg-white rounded-xl shadow-sm hover:shadow-md transition block overflow-hidden"
         >
-          <h3 class="text-lg font-semibold text-gray-800 mb-2">
-            {{ post.title }}
-          </h3>
-          <p class="text-gray-500 text-sm mb-3 line-clamp-2">
-            {{ post.description }}
-          </p>
-          <div class="flex items-center gap-4 text-xs text-gray-400">
-            <span>⏱ {{ post.cooking_time }}分</span>
-            <span>👥 {{ post.servings }}人前</span>
-            <span>👤 {{ post.user?.name }}</span>
+          <img
+            v-if="post.image_url"
+            :src="post.image_url"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">
+              {{ post.title }}
+            </h3>
+            <p class="text-gray-500 text-sm mb-3 line-clamp-2">
+              {{ post.description }}
+            </p>
+            <div class="flex items-center gap-4 text-xs text-gray-400">
+              <span>⏱ {{ post.cooking_time }}分</span>
+              <span>👥 {{ post.servings }}人前</span>
+              <span>👤 {{ post.user?.name }}</span>
+            </div>
           </div>
         </NuxtLink>
       </div>

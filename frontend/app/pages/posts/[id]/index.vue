@@ -53,32 +53,41 @@ const isOwner = computed(() => {
     </header>
 
     <main class="max-w-2xl mx-auto px-4 py-8">
-      <div class="bg-white rounded-2xl shadow p-8">
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ post?.title }}</h1>
+      <div class="bg-white rounded-2xl shadow overflow-hidden">
+        <img
+          v-if="post?.image_url"
+          :src="post.image_url"
+          class="w-full h-64 object-cover"
+        />
+        <div class="p-8">
+          <h1 class="text-2xl font-bold text-gray-800 mb-4">
+            {{ post?.title }}
+          </h1>
 
-        <div class="flex items-center gap-4 text-sm text-gray-400 mb-6">
-          <span>⏱ {{ post?.cooking_time }}分</span>
-          <span>👥 {{ post?.servings }}人前</span>
-          <span>👤 {{ post?.user?.name }}</span>
-        </div>
+          <div class="flex items-center gap-4 text-sm text-gray-400 mb-6">
+            <span>⏱ {{ post?.cooking_time }}分</span>
+            <span>👥 {{ post?.servings }}人前</span>
+            <span>👤 {{ post?.user?.name }}</span>
+          </div>
 
-        <p class="text-gray-600 leading-relaxed mb-8">
-          {{ post?.description }}
-        </p>
+          <p class="text-gray-600 leading-relaxed mb-8">
+            {{ post?.description }}
+          </p>
 
-        <div v-if="isOwner" class="flex gap-3">
-          <NuxtLink
-            :to="`/posts/${id}/edit`"
-            class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-4 py-2 rounded-lg transition text-sm"
-          >
-            編集
-          </NuxtLink>
-          <button
-            @click="handleDelete"
-            class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg transition text-sm"
-          >
-            削除
-          </button>
+          <div v-if="isOwner" class="flex gap-3">
+            <NuxtLink
+              :to="`/posts/${id}/edit`"
+              class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-4 py-2 rounded-lg transition text-sm"
+            >
+              編集
+            </NuxtLink>
+            <button
+              @click="handleDelete"
+              class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg transition text-sm"
+            >
+              削除
+            </button>
+          </div>
         </div>
       </div>
 
