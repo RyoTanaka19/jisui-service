@@ -13,4 +13,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-RUN chown -R www-data:www-data /var/www
+COPY . .
+
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+EXPOSE 10000
+
+CMD ["sh", "start.sh"]
