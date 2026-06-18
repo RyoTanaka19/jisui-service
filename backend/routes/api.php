@@ -7,6 +7,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // 認証不要
@@ -35,6 +36,11 @@ Route::get('/posts/{post}/likes', [LikeController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me',      [AuthController::class, 'me']);
+
+    // プロフィール
+    Route::get('/profile',              [ProfileController::class, 'show']);
+    Route::put('/profile',              [ProfileController::class, 'update']);
+    Route::post('/profile/avatar',      [ProfileController::class, 'uploadAvatar']);
 
     // 投稿CRUD
     Route::post('/posts',          [PostController::class, 'store']);

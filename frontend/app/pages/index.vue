@@ -1,5 +1,19 @@
 <script setup lang="ts">
 const { isLoggedIn, logout } = useAuth();
+const token = useCookie('auth_token');
+const profileAvatar = ref('');
+
+onMounted(async () => {
+  await fetchPosts();
+  if (token.value) {
+    try {
+      const user: any = await $fetch(`${config.public.apiBase}/profile`, {
+        headers: { Authorization: `Bearer ${token.value}` },
+      });
+      profileAvatar.value = user.avatar_url || '';
+    } catch (e) {}
+  }
+});
 const router = useRouter();
 const config = useRuntimeConfig();
 
@@ -63,6 +77,19 @@ const handleLogout = async () => {
               class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
             >
               ＋ 投稿する
+            </NuxtLink>
+            <NuxtLink to="/profile">
+              <img
+                v-if="profileAvatar"
+                :src="profileAvatar"
+                class="w-9 h-9 rounded-full object-cover border-2 border-green-400"
+              />
+              <div
+                v-else
+                class="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-lg"
+              >
+                👤
+              </div>
             </NuxtLink>
             <button
               @click="handleLogout"
