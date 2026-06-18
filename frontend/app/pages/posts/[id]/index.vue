@@ -3,6 +3,7 @@ const { api } = useApi();
 const { token, isLoggedIn } = useAuth();
 const route = useRoute();
 const router = useRouter();
+const config = useRuntimeConfig();
 
 const id = computed(() => route.params.id);
 
@@ -10,34 +11,19 @@ const post = ref(null);
 const currentUser = ref(null);
 
 const fetchPost = async () => {
-  try {
-    post.value = await $fetch(`http://nginx/api/posts/${id.value}`, {
-      headers: { Accept: 'application/json' },
-    });
-  } catch (e) {
-    post.value = await $fetch(`http://localhost:8080/api/posts/${id.value}`, {
-      headers: { Accept: 'application/json' },
-    });
-  }
+  post.value = await $fetch(`${config.public.apiBase}/posts/${id.value}`, {
+    headers: { Accept: 'application/json' },
+  });
 };
 
 const fetchCurrentUser = async () => {
   if (!token.value) return;
-  try {
-    currentUser.value = await $fetch('http://nginx/api/me', {
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
-  } catch (e) {
-    currentUser.value = await $fetch('http://localhost:8080/api/me', {
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
-  }
+  currentUser.value = await $fetch(`${config.public.apiBase}/me`, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token.value}`,
+    },
+  });
 };
 
 await fetchPost();

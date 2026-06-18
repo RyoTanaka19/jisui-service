@@ -1,25 +1,18 @@
 <script setup lang="ts">
 const { isLoggedIn, logout } = useAuth();
 const router = useRouter();
-const token = useCookie('auth_token');
+const config = useRuntimeConfig();
 
 const posts = ref(null);
 
 const fetchPosts = async () => {
   try {
-    const response = await $fetch('http://nginx/api/posts', {
+    const response = await $fetch(`${config.public.apiBase}/posts`, {
       headers: { Accept: 'application/json' },
     });
     posts.value = response;
   } catch (e) {
-    try {
-      const response = await $fetch('http://localhost:8080/api/posts', {
-        headers: { Accept: 'application/json' },
-      });
-      posts.value = response;
-    } catch (e2) {
-      console.error('API接続エラー', e2);
-    }
+    console.error('API接続エラー', e);
   }
 };
 
