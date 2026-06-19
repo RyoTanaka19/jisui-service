@@ -117,16 +117,6 @@ const isOwner = computed(() => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <header class="bg-white shadow-sm">
-      <div
-        class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between"
-      >
-        <NuxtLink to="/" class="text-xl font-bold text-green-600"
-          >🍳 自炊サービス</NuxtLink
-        >
-      </div>
-    </header>
-
     <main class="max-w-2xl mx-auto px-4 py-8">
       <!-- 投稿詳細 -->
       <div class="bg-white rounded-2xl shadow overflow-hidden mb-6">

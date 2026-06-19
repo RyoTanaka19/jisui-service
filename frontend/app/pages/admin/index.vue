@@ -68,17 +68,6 @@ const toggleAdmin = async (user: any) => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <header class="bg-white shadow-sm">
-      <div
-        class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between"
-      >
-        <NuxtLink to="/" class="text-xl font-bold text-green-600"
-          >🍳 自炊サービス</NuxtLink
-        >
-        <span class="text-sm text-gray-500">管理者画面</span>
-      </div>
-    </header>
-
     <main class="max-w-4xl mx-auto px-4 py-8">
       <h1 class="text-2xl font-bold text-gray-800 mb-2">ユーザー管理</h1>
       <p v-if="isSuperAdmin" class="text-sm text-purple-500 mb-6">

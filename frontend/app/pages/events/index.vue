@@ -44,23 +44,6 @@ const statusColor = (status: string) => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <header class="bg-white shadow-sm">
-      <div
-        class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between"
-      >
-        <NuxtLink to="/" class="text-xl font-bold text-green-600"
-          >🍳 自炊サービス</NuxtLink
-        >
-        <NuxtLink
-          v-if="isLoggedIn"
-          to="/events/create"
-          class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
-        >
-          ＋ イベント作成
-        </NuxtLink>
-      </div>
-    </header>
-
     <main class="max-w-4xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold text-gray-800 mb-6">イベント一覧</h2>
 
