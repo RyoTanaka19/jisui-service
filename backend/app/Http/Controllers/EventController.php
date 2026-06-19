@@ -25,7 +25,7 @@ class EventController extends Controller
     public function show(Request $request, Event $event)
     {
         $event->load('creator');
-        $participantsCount = $event->participants()->count();
+        $participantsCount = $event->participants()->count() + 1;
         $joined = false;
 
         if ($request->user()) {

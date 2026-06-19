@@ -3,6 +3,7 @@ const config = useRuntimeConfig();
 const { token, isLoggedIn } = useAuth();
 const route = useRoute();
 const router = useRouter();
+const { setFlash } = useFlash();
 
 const id = computed(() => route.params.id);
 const eventData = ref(null);
@@ -70,6 +71,7 @@ const handleDelete = async () => {
       Authorization: `Bearer ${token.value}`,
     },
   });
+  setFlash('イベントを削除しました');
   router.push('/events');
 };
 
@@ -158,7 +160,9 @@ const isAdmin = computed(() => currentUser.value?.is_admin === true);
           <div class="flex gap-3">
             <button
               v-if="
-                !eventData?.joined && eventData?.event?.status !== 'finished'
+                !eventData?.joined &&
+                eventData?.event?.status !== 'finished' &&
+                currentUser?.id !== eventData?.event?.created_by
               "
               @click="handleJoin"
               :disabled="joinLoading"

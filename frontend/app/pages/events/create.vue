@@ -4,6 +4,7 @@ definePageMeta({ middleware: 'auth' });
 const config = useRuntimeConfig();
 const token = useCookie('auth_token');
 const router = useRouter();
+const { setFlash } = useFlash();
 
 const form = reactive({
   title: '',
@@ -69,6 +70,7 @@ const handleSubmit = async () => {
       },
       body: form,
     });
+    setFlash('イベントを作成しました！');
     router.push('/events');
   } catch (e: any) {
     error.value = '作成に失敗しました。入力内容を確認してください';
@@ -167,20 +169,6 @@ const handleSubmit = async () => {
             type="datetime-local"
             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           />
-        </div>
-
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >ステータス</label
-          >
-          <select
-            v-model="form.status"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-          >
-            <option value="upcoming">開催予定</option>
-            <option value="ongoing">開催中</option>
-            <option value="finished">終了</option>
-          </select>
         </div>
 
         <button

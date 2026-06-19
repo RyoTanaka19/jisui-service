@@ -5,6 +5,7 @@ const config = useRuntimeConfig();
 const token = useCookie('auth_token');
 const route = useRoute();
 const router = useRouter();
+const { setFlash } = useFlash();
 
 const id = computed(() => route.params.id);
 const form = reactive({
@@ -85,6 +86,7 @@ const handleSubmit = async () => {
       },
       body: form,
     });
+    setFlash('イベントを更新しました！');
     router.push(`/events/${id.value}`);
   } catch (e: any) {
     error.value = '更新に失敗しました。入力内容を確認してください';
