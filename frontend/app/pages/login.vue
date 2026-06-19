@@ -3,6 +3,7 @@ definePageMeta({ middleware: 'guest' });
 
 const { login } = useAuth();
 const router = useRouter();
+const { setFlash } = useFlash();
 const route = useRoute();
 const config = useRuntimeConfig();
 
@@ -30,7 +31,8 @@ const handleLogin = async () => {
   loading.value = true;
   try {
     await login(form.email, form.password);
-    router.push('/');
+    setFlash('ログインしました！');
+    router.push('/posts');
   } catch (e: any) {
     error.value = 'メールアドレスまたはパスワードが正しくありません';
   } finally {

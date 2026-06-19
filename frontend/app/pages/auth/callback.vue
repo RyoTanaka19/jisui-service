@@ -2,6 +2,7 @@
 const route = useRoute();
 const router = useRouter();
 const token = useCookie('auth_token');
+const { setFlash } = useFlash();
 
 onMounted(() => {
   const tokenParam = route.query.token as string;
@@ -15,7 +16,8 @@ onMounted(() => {
 
   if (tokenParam) {
     token.value = tokenParam;
-    router.push('/');
+    setFlash('Googleログインしました！');
+    router.push('/posts');
   } else {
     router.push('/login');
   }

@@ -7,6 +7,7 @@ const isTopPage = computed(() => route.path === '/');
   <div>
     <NuxtRouteAnnouncer />
     <AppHeader v-if="!isTopPage" />
+    <FlashMessage />
     <div :class="isTopPage ? '' : 'pt-16 pb-16'">
       <NuxtPage />
     </div>

@@ -4,12 +4,13 @@ const token = useCookie('auth_token');
 const { isLoggedIn, logout } = useAuth();
 const router = useRouter();
 const route = useRoute();
+const { setFlash } = useFlash();
 
 const profileAvatar = ref('');
 const currentUserData = ref(null);
 const { unreadMessageCount, fetchUnreadMessageCount } = useNotification();
 
-onMounted(async () => {
+const fetchCurrentUser = async () => {
   if (token.value) {
     try {
       const user: any = await $fetch(`${config.public.apiBase}/me`, {
@@ -19,12 +20,24 @@ onMounted(async () => {
       currentUserData.value = user;
       await fetchUnreadMessageCount();
     } catch (e) {}
+  } else {
+    currentUserData.value = null;
+    profileAvatar.value = '';
   }
+};
+
+onMounted(async () => {
+  await fetchCurrentUser();
+});
+
+watch(token, async () => {
+  await fetchCurrentUser();
 });
 
 const handleLogout = async () => {
   await logout();
-  router.push('/login');
+  setFlash('ログアウトしました');
+  router.push('/');
 };
 
 const isEventPage = computed(() => route.path.startsWith('/events'));

@@ -3,6 +3,7 @@ definePageMeta({ middleware: 'guest' });
 
 const { register } = useAuth();
 const router = useRouter();
+const { setFlash } = useFlash();
 
 const form = reactive({
   name: '',
@@ -23,7 +24,8 @@ const handleRegister = async () => {
       form.password,
       form.password_confirmation,
     );
-    router.push('/');
+    setFlash('会員登録が完了しました！');
+    router.push('/posts');
   } catch (e: any) {
     error.value = '登録に失敗しました。入力内容を確認してください';
   } finally {
