@@ -48,7 +48,7 @@ const handleSubmit = async () => {
 
       <div class="mb-6">
         <label class="block text-sm font-medium text-gray-700 mb-1"
-          >メールアドレス</label
+          >メールアドレス<span class="text-red-500">*</span></label
         >
         <input
           v-model="email"

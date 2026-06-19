@@ -12,11 +12,50 @@ const form = reactive({
   password: '',
   password_confirmation: '',
 });
+
+const errors = reactive({
+  email: '',
+  password: '',
+  password_confirmation: '',
+});
+
 const loading = ref(false);
-const error = ref('');
+
+const validate = () => {
+  let valid = true;
+  errors.email = '';
+  errors.password = '';
+  errors.password_confirmation = '';
+
+  if (!form.email) {
+    errors.email = 'メールアドレスは必須です';
+    valid = false;
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    errors.email = '正しいメールアドレスの形式で入力してください';
+    valid = false;
+  }
+
+  if (!form.password) {
+    errors.password = '新しいパスワードは必須です';
+    valid = false;
+  } else if (form.password.length < 8) {
+    errors.password = 'パスワードは8文字以上で入力してください';
+    valid = false;
+  }
+
+  if (!form.password_confirmation) {
+    errors.password_confirmation = 'パスワード確認は必須です';
+    valid = false;
+  } else if (form.password !== form.password_confirmation) {
+    errors.password_confirmation = 'パスワードが一致しません';
+    valid = false;
+  }
+
+  return valid;
+};
 
 const handleSubmit = async () => {
-  error.value = '';
+  if (!validate()) return;
   loading.value = true;
   try {
     await $fetch(`${config.public.apiBase}/reset-password`, {
@@ -29,7 +68,8 @@ const handleSubmit = async () => {
     );
     router.push('/login');
   } catch (e: any) {
-    error.value = 'パスワードのリセットに失敗しました。もう一度お試しください';
+    errors.password =
+      'パスワードのリセットに失敗しました。もう一度お試しください';
   } finally {
     loading.value = false;
   }
@@ -43,47 +83,64 @@ const handleSubmit = async () => {
         🔑 新しいパスワードを設定
       </h1>
 
-      <div
-        v-if="error"
-        class="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm"
-      >
-        {{ error }}
-      </div>
-
+      <!-- メールアドレス -->
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1"
-          >メールアドレス</label
-        >
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          メールアドレス <span class="text-red-500">*</span>
+        </label>
         <input
           v-model="form.email"
           type="email"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+          :class="[
+            'w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400',
+            errors.email ? 'border-red-400' : 'border-gray-300',
+          ]"
           placeholder="example@email.com"
         />
+        <p v-if="errors.email" class="text-red-500 text-xs mt-1">
+          {{ errors.email }}
+        </p>
       </div>
 
+      <!-- 新しいパスワード -->
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1"
-          >新しいパスワード</label
-        >
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          新しいパスワード <span class="text-red-500">*</span>
+        </label>
         <input
           v-model="form.password"
           type="password"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+          :class="[
+            'w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400',
+            errors.password ? 'border-red-400' : 'border-gray-300',
+          ]"
           placeholder="8文字以上"
         />
+        <p v-if="errors.password" class="text-red-500 text-xs mt-1">
+          {{ errors.password }}
+        </p>
       </div>
 
+      <!-- パスワード確認 -->
       <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-1"
-          >パスワード確認</label
-        >
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          パスワード確認 <span class="text-red-500">*</span>
+        </label>
         <input
           v-model="form.password_confirmation"
           type="password"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+          :class="[
+            'w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400',
+            errors.password_confirmation ? 'border-red-400' : 'border-gray-300',
+          ]"
           placeholder="8文字以上"
         />
+        <p
+          v-if="errors.password_confirmation"
+          class="text-red-500 text-xs mt-1"
+        >
+          {{ errors.password_confirmation }}
+        </p>
       </div>
 
       <button
