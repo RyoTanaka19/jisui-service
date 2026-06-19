@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { api } = useApi();
 const { token, isLoggedIn } = useAuth();
+const { setFlash } = useFlash();
 const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
@@ -61,7 +62,6 @@ await fetchCurrentUser();
 await fetchComments();
 await fetchLikes();
 
-const { setFlash } = useFlash();
 const handleDelete = async () => {
   if (!confirm('本当に削除しますか？')) return;
   await api(`/posts/${id.value}`, { method: 'DELETE' });
@@ -80,6 +80,7 @@ const handleCommentSubmit = async () => {
     });
     commentBody.value = '';
     await fetchComments();
+    setFlash('コメントを投稿しました！');
   } catch (e) {
     commentError.value = 'コメントの投稿に失敗しました';
   } finally {
@@ -91,6 +92,7 @@ const handleCommentDelete = async (commentId: number) => {
   if (!confirm('コメントを削除しますか？')) return;
   await api(`/posts/${id.value}/comments/${commentId}`, { method: 'DELETE' });
   await fetchComments();
+  setFlash('コメントを削除しました');
 };
 
 const handleLike = async () => {
@@ -105,6 +107,7 @@ const handleLike = async () => {
     });
     likesCount.value = response.likes_count;
     liked.value = response.liked;
+    setFlash(response.liked ? 'いいねしました！' : 'いいねを取り消しました');
   } catch (e) {
     console.error('いいねに失敗しました', e);
   } finally {
