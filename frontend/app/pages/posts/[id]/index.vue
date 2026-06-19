@@ -8,6 +8,15 @@ const config = useRuntimeConfig();
 
 const id = computed(() => route.params.id);
 
+const shareOnX = () => {
+  const text = `${post.value?.title}\n`;
+  const url = window.location.href;
+  window.open(
+    `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+    '_blank',
+  );
+};
+
 const post = ref(null);
 const currentUser = ref(null);
 const comments = ref([]);
@@ -57,10 +66,12 @@ const fetchLikes = async () => {
   liked.value = response.liked;
 };
 
-await fetchPost();
-await fetchCurrentUser();
-await fetchComments();
-await fetchLikes();
+onMounted(async () => {
+  await fetchPost();
+  await fetchCurrentUser();
+  await fetchComments();
+  await fetchLikes();
+});
 
 const handleDelete = async () => {
   if (!confirm('本当に削除しますか？')) return;
@@ -137,7 +148,6 @@ const isOwner = computed(() => {
 
           <div class="flex items-center gap-4 text-sm text-gray-400 mb-6">
             <span>⏱ {{ post?.cooking_time }}分</span>
-            <span>👥 {{ post?.servings }}人前</span>
             <span>👤 {{ post?.user?.name }}</span>
           </div>
 
@@ -158,6 +168,17 @@ const isOwner = computed(() => {
               ]"
             >
               {{ liked ? '❤️' : '🤍' }} {{ likesCount }}
+            </button>
+          </div>
+
+          <!-- Xでシェア -->
+          <div class="flex items-center gap-4 mb-6">
+            <button
+              @click="shareOnX"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg bg-black hover:bg-gray-800 text-white font-semibold text-sm transition"
+            >
+              <span>𝕏</span>
+              <span>でシェア</span>
             </button>
           </div>
 
