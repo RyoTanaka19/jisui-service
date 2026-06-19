@@ -4,6 +4,7 @@ definePageMeta({ middleware: 'guest' });
 const config = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
+const { setFlash } = useFlash();
 
 const form = reactive({
   email: (route.query.email as string) || '',
@@ -23,7 +24,10 @@ const handleSubmit = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: form,
     });
-    router.push('/login?reset=success');
+    setFlash(
+      'パスワードをリセットしました！新しいパスワードでログインしてください。',
+    );
+    router.push('/login');
   } catch (e: any) {
     error.value = 'パスワードのリセットに失敗しました。もう一度お試しください';
   } finally {

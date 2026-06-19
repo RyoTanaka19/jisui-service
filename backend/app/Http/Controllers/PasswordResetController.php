@@ -9,12 +9,22 @@ use Illuminate\Support\Facades\Password;
 
 class PasswordResetController extends Controller
 {
-    // パスワードリセットメール送信
     public function sendResetLink(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
         ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'メールアドレスが見つかりませんでした'], 404);
+        }
+
+        // Googleログインユーザーの場合、仮パスワードを設定
+        if (!$user->password) {
+            $user->update(['password' => Hash::make(str()->random(24))]);
+        }
 
         $status = Password::sendResetLink(
             $request->only('email')
@@ -27,7 +37,6 @@ class PasswordResetController extends Controller
         return response()->json(['message' => 'メールアドレスが見つかりませんでした'], 404);
     }
 
-    // パスワードリセット
     public function resetPassword(Request $request)
     {
         $request->validate([

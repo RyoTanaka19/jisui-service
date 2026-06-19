@@ -2,9 +2,11 @@
 definePageMeta({ middleware: 'guest' });
 
 const config = useRuntimeConfig();
+const router = useRouter();
+const { setFlash } = useFlash();
+
 const email = ref('');
 const loading = ref(false);
-const success = ref(false);
 const error = ref('');
 
 const handleSubmit = async () => {
@@ -16,7 +18,8 @@ const handleSubmit = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: { email: email.value },
     });
-    success.value = true;
+    setFlash('パスワードリセットメールを送信しました！');
+    router.push('/login');
   } catch (e: any) {
     error.value = 'メールアドレスが見つかりませんでした';
   } finally {
@@ -33,44 +36,35 @@ const handleSubmit = async () => {
       </h1>
 
       <div
-        v-if="success"
-        class="bg-green-50 text-green-600 rounded-lg p-4 mb-4 text-sm text-center"
+        v-if="error"
+        class="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm"
       >
-        パスワードリセットメールを送信しました。メールをご確認ください。
+        {{ error }}
       </div>
 
-      <div v-else>
-        <div
-          v-if="error"
-          class="bg-red-50 text-red-600 rounded-lg p-3 mb-4 text-sm"
+      <p class="text-gray-500 text-sm mb-6">
+        登録済みのメールアドレスを入力してください。パスワードリセット用のリンクをお送りします。
+      </p>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-1"
+          >メールアドレス</label
         >
-          {{ error }}
-        </div>
-
-        <p class="text-gray-500 text-sm mb-6">
-          登録済みのメールアドレスを入力してください。パスワードリセット用のリンクをお送りします。
-        </p>
-
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >メールアドレス</label
-          >
-          <input
-            v-model="email"
-            type="email"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-            placeholder="example@email.com"
-          />
-        </div>
-
-        <button
-          @click="handleSubmit"
-          :disabled="loading"
-          class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50"
-        >
-          {{ loading ? '送信中...' : 'リセットメールを送信' }}
-        </button>
+        <input
+          v-model="email"
+          type="email"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+          placeholder="example@email.com"
+        />
       </div>
+
+      <button
+        @click="handleSubmit"
+        :disabled="loading"
+        class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50"
+      >
+        {{ loading ? '送信中...' : 'リセットメールを送信' }}
+      </button>
 
       <p class="text-center text-sm text-gray-500 mt-4">
         <NuxtLink to="/login" class="text-green-500 hover:underline"
