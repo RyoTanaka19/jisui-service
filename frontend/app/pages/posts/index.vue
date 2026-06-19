@@ -44,8 +44,8 @@ const goToPage = async (page: number) => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <main class="max-w-4xl mx-auto px-4 py-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">みんなのレシピ</h2>
+    <main class="max-w-2xl mx-auto px-4 py-8">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">みんなのレシピ</h2>
 
       <!-- 検索フォーム -->
       <div class="flex gap-2 mb-6">
@@ -53,19 +53,19 @@ const goToPage = async (page: number) => {
           v-model="searchQuery"
           type="text"
           placeholder="レシピを検索..."
-          class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+          class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
           @keyup.enter="handleSearch"
         />
         <button
           @click="handleSearch"
-          class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-lg transition"
+          class="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition text-sm"
         >
           検索
         </button>
         <button
           v-if="searchQuery"
           @click="clearSearch"
-          class="bg-gray-200 hover:bg-gray-300 text-gray-600 font-semibold px-4 py-2 rounded-lg transition"
+          class="bg-gray-200 hover:bg-gray-300 text-gray-600 font-semibold px-3 py-2 rounded-lg transition text-sm"
         >
           クリア
         </button>
@@ -78,7 +78,7 @@ const goToPage = async (page: number) => {
         <p v-else>まだ投稿がありません</p>
       </div>
 
-      <div class="grid gap-4">
+      <div class="grid grid-cols-2 gap-3">
         <NuxtLink
           v-for="post in posts?.data"
           :key="post.id"
@@ -88,18 +88,17 @@ const goToPage = async (page: number) => {
           <img
             v-if="post.image_url"
             :src="post.image_url"
-            class="w-full h-48 object-cover"
+            class="w-full h-40 object-cover"
           />
-          <div class="p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">
+          <div class="p-4">
+            <h3 class="text-base font-semibold text-gray-800 mb-1">
               {{ post.title }}
             </h3>
-            <p class="text-gray-500 text-sm mb-3 line-clamp-2">
+            <p class="text-gray-500 text-sm mb-2 line-clamp-2">
               {{ post.description }}
             </p>
-            <div class="flex items-center gap-4 text-xs text-gray-400">
-              <span>⏱ {{ post.cooking_time }}分</span>
-              <span>👥 {{ post.servings }}人前</span>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span v-if="post.cooking_time">⏱ {{ post.cooking_time }}分</span>
               <span>👤 {{ post.user?.name }}</span>
             </div>
           </div>
@@ -109,12 +108,12 @@ const goToPage = async (page: number) => {
       <!-- ページネーション -->
       <div
         v-if="posts?.last_page > 1"
-        class="flex justify-center items-center gap-2 mt-8"
+        class="flex justify-center items-center gap-2 mt-6"
       >
         <button
           @click="goToPage(currentPage - 1)"
           :disabled="currentPage === 1"
-          class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          class="px-3 py-1 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm"
         >
           ← 前へ
         </button>
@@ -124,7 +123,7 @@ const goToPage = async (page: number) => {
           :key="page"
           @click="goToPage(page)"
           :class="[
-            'px-4 py-2 rounded-lg border transition',
+            'px-3 py-1 rounded-lg border transition text-sm',
             currentPage === page
               ? 'bg-green-500 border-green-500 text-white'
               : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50',
@@ -136,16 +135,11 @@ const goToPage = async (page: number) => {
         <button
           @click="goToPage(currentPage + 1)"
           :disabled="currentPage === posts?.last_page"
-          class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          class="px-3 py-1 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm"
         >
           次へ →
         </button>
       </div>
-
-      <!-- 投稿数表示 -->
-      <p v-if="posts?.total" class="text-center text-gray-400 text-sm mt-4">
-        全{{ posts.total }}件中 {{ posts.from }}〜{{ posts.to }}件を表示
-      </p>
     </main>
   </div>
 </template>

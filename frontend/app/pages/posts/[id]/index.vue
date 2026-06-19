@@ -251,12 +251,6 @@ const isOwner = computed(() => {
           </div>
         </div>
       </div>
-
-      <div class="mt-4">
-        <NuxtLink to="/" class="text-green-500 hover:underline text-sm"
-          >← 一覧に戻る</NuxtLink
-        >
-      </div>
     </main>
   </div>
 </template>

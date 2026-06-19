@@ -61,7 +61,34 @@ onMounted(async () => {
   await fetchProfile();
 });
 
+const errors = reactive({
+  name: '',
+  email: '',
+});
+
+const validate = () => {
+  let valid = true;
+  errors.name = '';
+  errors.email = '';
+
+  if (!form.name) {
+    errors.name = 'お名前は必須です';
+    valid = false;
+  }
+
+  if (!form.email) {
+    errors.email = 'メールアドレスは必須です';
+    valid = false;
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    errors.email = '正しいメールアドレスの形式で入力してください';
+    valid = false;
+  }
+
+  return valid;
+};
+
 const handleUpdate = async () => {
+  if (!validate()) return;
   error.value = '';
   success.value = '';
   loading.value = true;
@@ -175,28 +202,39 @@ const handleAvatarUpload = async (e: Event) => {
 
         <!-- ユーザー名 -->
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >ユーザー名</label
-          >
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            ユーザー名 <span class="text-red-500">*</span>
+          </label>
           <input
             v-model="form.name"
             type="text"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+            :class="[
+              'w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400',
+              errors.name ? 'border-red-400' : 'border-gray-300',
+            ]"
           />
+          <p v-if="errors.name" class="text-red-500 text-xs mt-1">
+            {{ errors.name }}
+          </p>
         </div>
 
         <!-- メールアドレス -->
         <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >メールアドレス</label
-          >
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            メールアドレス <span class="text-red-500">*</span>
+          </label>
           <input
             v-model="form.email"
             type="email"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+            :class="[
+              'w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400',
+              errors.email ? 'border-red-400' : 'border-gray-300',
+            ]"
           />
+          <p v-if="errors.email" class="text-red-500 text-xs mt-1">
+            {{ errors.email }}
+          </p>
         </div>
-
         <button
           @click="handleUpdate"
           :disabled="loading"
@@ -243,12 +281,6 @@ const handleAvatarUpload = async (e: Event) => {
             >✅ 管理者権限あり</span
           >
         </div>
-      </div>
-
-      <div class="mt-4">
-        <NuxtLink to="/" class="text-green-500 hover:underline text-sm"
-          >← 一覧に戻る</NuxtLink
-        >
       </div>
     </main>
   </div>

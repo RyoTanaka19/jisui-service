@@ -51,6 +51,12 @@ const isEventPage = computed(() => route.path.startsWith('/events'));
           >🍳 自炊サービス</NuxtLink
         >
         <NuxtLink
+          to="/posts"
+          class="text-sm text-gray-500 hover:text-green-600 transition"
+        >
+          投稿一覧
+        </NuxtLink>
+        <NuxtLink
           to="/events"
           class="text-sm text-gray-500 hover:text-green-600 transition"
         >
