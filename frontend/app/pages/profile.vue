@@ -4,6 +4,8 @@ definePageMeta({ middleware: 'auth' });
 const { api } = useApi();
 const config = useRuntimeConfig();
 const token = useCookie('auth_token');
+const router = useRouter();
+const { setFlash } = useFlash();
 
 const profile = ref(null);
 const loading = ref(false);
@@ -72,8 +74,8 @@ const handleUpdate = async () => {
       },
       body: form,
     });
-    success.value = 'プロフィールを更新しました';
-    await fetchProfile();
+    setFlash('プロフィールを更新しました！');
+    router.push('/posts');
   } catch (e: any) {
     error.value = '更新に失敗しました';
   } finally {
