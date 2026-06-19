@@ -3,13 +3,13 @@ const route = useRoute();
 const isTopPage = computed(() => route.path === '/');
 
 useHead({
-  title: '自炊サービス',
+  title: 'みんなと自炊',
   meta: [
     {
       name: 'description',
       content: '毎日の自炊をもっと楽しく。レシピを共有して料理の輪を広げよう。',
     },
-    { property: 'og:title', content: '自炊サービス' },
+    { property: 'og:title', content: 'みんなと自炊' },
     {
       property: 'og:description',
       content: '毎日の自炊をもっと楽しく。レシピを共有して料理の輪を広げよう。',
@@ -21,7 +21,7 @@ useHead({
       content: 'https://jisui-service-15eo.vercel.app/ogp.png',
     },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: '自炊サービス' },
+    { name: 'twitter:title', content: 'みんなと自炊' },
     {
       name: 'twitter:description',
       content: '毎日の自炊をもっと楽しく。レシピを共有して料理の輪を広げよう。',

@@ -22,12 +22,12 @@ class ResetPasswordNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('【自炊サービス】パスワードリセット')
+            ->subject('【みんなと自炊】パスワードリセット')
             ->greeting('こんにちは！')
             ->line('パスワードリセットのリクエストを受け付けました。')
             ->action('パスワードをリセットする', $this->url)
             ->line('このリンクは60分間有効です。')
             ->line('心当たりがない場合は、このメールを無視してください。')
-            ->salutation('自炊サービス');
+            ->salutation('みんなと自炊');
     }
 }

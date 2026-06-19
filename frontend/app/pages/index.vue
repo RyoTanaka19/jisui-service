@@ -10,7 +10,7 @@ const { isLoggedIn } = useAuth();
     <div class="flex-1 flex flex-col items-center justify-center px-4 py-16">
       <!-- ロゴ -->
       <div class="text-center mb-12">
-        <h1 class="text-5xl font-bold text-green-600 mb-4">🍳 自炊サービス</h1>
+        <h1 class="text-5xl font-bold text-green-600 mb-4">🍳 みんなと自炊</h1>
         <p class="text-xl text-gray-500 mb-2">毎日の自炊をもっと楽しく</p>
         <p class="text-gray-400">レシピを共有して、料理の輪を広げよう</p>
       </div>

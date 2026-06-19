@@ -48,7 +48,7 @@ const isEventPage = computed(() => route.path.startsWith('/events'));
     <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
       <div class="flex items-center gap-4">
         <NuxtLink to="/" class="text-xl font-bold text-green-600"
-          >🍳 自炊サービス</NuxtLink
+          >🍳 みんなと自炊</NuxtLink
         >
         <NuxtLink
           to="/posts"
