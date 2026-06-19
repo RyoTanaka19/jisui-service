@@ -4,6 +4,7 @@ definePageMeta({ middleware: 'auth' });
 const { api } = useApi();
 const route = useRoute();
 const router = useRouter();
+const { setFlash } = useFlash();
 const config = useRuntimeConfig();
 const token = useCookie('auth_token');
 
@@ -17,7 +18,6 @@ const form = reactive({
   title: post.value?.title || '',
   description: post.value?.description || '',
   cooking_time: post.value?.cooking_time || '',
-  servings: post.value?.servings || 1,
   image_url: post.value?.image_url || '',
 });
 
@@ -61,6 +61,7 @@ const handleSubmit = async () => {
       body: form,
     });
     await clearNuxtData(`post-${id.value}`);
+    setFlash('投稿を更新しました！');
     router.push(`/posts/${id.value}`);
   } catch (e: any) {
     error.value = '更新に失敗しました。入力内容を確認してください';
@@ -147,18 +148,6 @@ const handleSubmit = async () => {
           >
           <input
             v-model="form.cooking_time"
-            type="number"
-            min="1"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-          />
-        </div>
-
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >何人前</label
-          >
-          <input
-            v-model="form.servings"
             type="number"
             min="1"
             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"

@@ -61,10 +61,12 @@ await fetchCurrentUser();
 await fetchComments();
 await fetchLikes();
 
+const { setFlash } = useFlash();
 const handleDelete = async () => {
   if (!confirm('本当に削除しますか？')) return;
   await api(`/posts/${id.value}`, { method: 'DELETE' });
-  router.push('/');
+  setFlash('投稿を削除しました');
+  router.push('/posts');
 };
 
 const handleCommentSubmit = async () => {
