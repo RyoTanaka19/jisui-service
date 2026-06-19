@@ -3,6 +3,7 @@ const config = useRuntimeConfig();
 const token = useCookie('auth_token');
 const { isLoggedIn, logout } = useAuth();
 const router = useRouter();
+const route = useRoute();
 
 const profileAvatar = ref('');
 const currentUserData = ref(null);
@@ -25,6 +26,8 @@ const handleLogout = async () => {
   await logout();
   router.push('/login');
 };
+
+const isEventPage = computed(() => route.path.startsWith('/events'));
 </script>
 
 <template>
@@ -44,11 +47,22 @@ const handleLogout = async () => {
 
       <div class="flex items-center gap-3">
         <template v-if="isLoggedIn">
+          <!-- 投稿作成ボタン（イベントページ以外） -->
           <NuxtLink
+            v-if="!isEventPage"
             to="/posts/create"
             class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
           >
             ＋ 投稿する
+          </NuxtLink>
+
+          <!-- イベント作成ボタン（イベントページかつ管理者のみ） -->
+          <NuxtLink
+            v-if="isEventPage && currentUserData?.is_admin"
+            to="/events/create"
+            class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
+          >
+            ＋ イベント作成
           </NuxtLink>
 
           <NuxtLink
