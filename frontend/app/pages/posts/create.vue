@@ -3,6 +3,7 @@ definePageMeta({ middleware: 'auth' });
 
 const { api } = useApi();
 const router = useRouter();
+const { setFlash } = useFlash();
 const config = useRuntimeConfig();
 const token = useCookie('auth_token');
 
@@ -10,7 +11,6 @@ const form = reactive({
   title: '',
   description: '',
   cooking_time: '',
-  servings: 1,
   image_url: '',
 });
 const error = ref('');
@@ -52,7 +52,8 @@ const handleSubmit = async () => {
       method: 'POST',
       body: form,
     });
-    router.push('/');
+    setFlash('投稿しました！');
+    router.push('/posts');
   } catch (e: any) {
     error.value = '投稿に失敗しました。入力内容を確認してください';
   } finally {
@@ -138,19 +139,6 @@ const handleSubmit = async () => {
             min="1"
             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
             placeholder="例：30"
-          />
-        </div>
-
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >何人前</label
-          >
-          <input
-            v-model="form.servings"
-            type="number"
-            min="1"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-            placeholder="例：2"
           />
         </div>
 

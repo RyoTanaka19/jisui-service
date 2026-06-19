@@ -32,7 +32,6 @@ class PostController extends Controller
             'description'  => 'nullable|string',
             'image_url'    => 'nullable|url',
             'cooking_time' => 'nullable|integer|min:1',
-            'servings'     => 'required|integer|min:1',
         ]);
 
         $post = $request->user()->posts()->create($validated);
