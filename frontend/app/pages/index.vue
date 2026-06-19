@@ -1,151 +1,70 @@
 <script setup lang="ts">
-const config = useRuntimeConfig();
-
-const posts = ref(null);
-const searchQuery = ref('');
-const currentPage = ref(1);
-
-const fetchPosts = async (search = '', page = 1) => {
-  try {
-    let url = `${config.public.apiBase}/posts?page=${page}`;
-    if (search) url += `&search=${encodeURIComponent(search)}`;
-
-    const response = await $fetch(url, {
-      headers: { Accept: 'application/json' },
-      cache: 'no-cache',
-    });
-    posts.value = response;
-  } catch (e) {
-    console.error('API接続エラー', e);
-  }
-};
-
-onMounted(async () => {
-  await fetchPosts();
-});
-
-const handleSearch = async () => {
-  currentPage.value = 1;
-  await fetchPosts(searchQuery.value, 1);
-};
-
-const clearSearch = async () => {
-  searchQuery.value = '';
-  currentPage.value = 1;
-  await fetchPosts();
-};
-
-const goToPage = async (page: number) => {
-  currentPage.value = page;
-  await fetchPosts(searchQuery.value, page);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+const { isLoggedIn } = useAuth();
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <main class="max-w-4xl mx-auto px-4 py-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">みんなのレシピ</h2>
-
-      <!-- 検索フォーム -->
-      <div class="flex gap-2 mb-6">
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="レシピを検索..."
-          class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-          @keyup.enter="handleSearch"
-        />
-        <button
-          @click="handleSearch"
-          class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-lg transition"
-        >
-          検索
-        </button>
-        <button
-          v-if="searchQuery"
-          @click="clearSearch"
-          class="bg-gray-200 hover:bg-gray-300 text-gray-600 font-semibold px-4 py-2 rounded-lg transition"
-        >
-          クリア
-        </button>
+  <div
+    class="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col"
+  >
+    <!-- ヘッダーなし・フッターなし -->
+    <div class="flex-1 flex flex-col items-center justify-center px-4 py-16">
+      <!-- ロゴ -->
+      <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold text-green-600 mb-4">🍳 自炊サービス</h1>
+        <p class="text-xl text-gray-500 mb-2">毎日の自炊をもっと楽しく</p>
+        <p class="text-gray-400">レシピを共有して、料理の輪を広げよう</p>
       </div>
 
-      <div v-if="!posts?.data?.length" class="text-center text-gray-400 py-12">
-        <p v-if="searchQuery">
-          「{{ searchQuery }}」に一致するレシピが見つかりませんでした
-        </p>
-        <p v-else>まだ投稿がありません</p>
+      <!-- ボタン -->
+      <div class="flex flex-col items-center gap-4 w-full max-w-xs mb-12">
+        <template v-if="isLoggedIn">
+          <NuxtLink
+            to="/posts"
+            class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition text-center text-lg"
+          >
+            投稿一覧を見る
+          </NuxtLink>
+        </template>
+        <template v-else>
+          <NuxtLink
+            to="/login"
+            class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition text-center text-lg"
+          >
+            ログイン
+          </NuxtLink>
+          <NuxtLink
+            to="/register"
+            class="w-full bg-white hover:bg-gray-50 text-green-600 font-semibold py-3 rounded-xl transition text-center text-lg border-2 border-green-500"
+          >
+            新規登録
+          </NuxtLink>
+          <NuxtLink
+            to="/posts"
+            class="text-sm text-gray-400 hover:text-gray-600 transition"
+          >
+            ログインせずに投稿一覧を見る →
+          </NuxtLink>
+        </template>
       </div>
 
-      <div class="grid gap-4">
-        <NuxtLink
-          v-for="post in posts?.data"
-          :key="post.id"
-          :to="`/posts/${post.id}`"
-          class="bg-white rounded-xl shadow-sm hover:shadow-md transition block overflow-hidden"
-        >
-          <img
-            v-if="post.image_url"
-            :src="post.image_url"
-            class="w-full h-48 object-cover"
-          />
-          <div class="p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">
-              {{ post.title }}
-            </h3>
-            <p class="text-gray-500 text-sm mb-3 line-clamp-2">
-              {{ post.description }}
-            </p>
-            <div class="flex items-center gap-4 text-xs text-gray-400">
-              <span>⏱ {{ post.cooking_time }}分</span>
-              <span>👥 {{ post.servings }}人前</span>
-              <span>👤 {{ post.user?.name }}</span>
-            </div>
-          </div>
-        </NuxtLink>
+      <!-- 特徴 -->
+      <div class="grid grid-cols-3 gap-6 max-w-2xl w-full">
+        <div class="text-center p-4 bg-white rounded-2xl shadow-sm">
+          <div class="text-3xl mb-2">📸</div>
+          <h3 class="font-semibold text-gray-700 mb-1">レシピ投稿</h3>
+          <p class="text-xs text-gray-400">写真付きでレシピを共有</p>
+        </div>
+        <div class="text-center p-4 bg-white rounded-2xl shadow-sm">
+          <div class="text-3xl mb-2">🎉</div>
+          <h3 class="font-semibold text-gray-700 mb-1">イベント</h3>
+          <p class="text-xs text-gray-400">料理イベントに参加</p>
+        </div>
+        <div class="text-center p-4 bg-white rounded-2xl shadow-sm">
+          <div class="text-3xl mb-2">❤️</div>
+          <h3 class="font-semibold text-gray-700 mb-1">いいね・コメント</h3>
+          <p class="text-xs text-gray-400">みんなと交流しよう</p>
+        </div>
       </div>
-
-      <!-- ページネーション -->
-      <div
-        v-if="posts?.last_page > 1"
-        class="flex justify-center items-center gap-2 mt-8"
-      >
-        <button
-          @click="goToPage(currentPage - 1)"
-          :disabled="currentPage === 1"
-          class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
-        >
-          ← 前へ
-        </button>
-
-        <button
-          v-for="page in posts?.last_page"
-          :key="page"
-          @click="goToPage(page)"
-          :class="[
-            'px-4 py-2 rounded-lg border transition',
-            currentPage === page
-              ? 'bg-green-500 border-green-500 text-white'
-              : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50',
-          ]"
-        >
-          {{ page }}
-        </button>
-
-        <button
-          @click="goToPage(currentPage + 1)"
-          :disabled="currentPage === posts?.last_page"
-          class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
-        >
-          次へ →
-        </button>
-      </div>
-
-      <!-- 投稿数表示 -->
-      <p v-if="posts?.total" class="text-center text-gray-400 text-sm mt-4">
-        全{{ posts.total }}件中 {{ posts.from }}〜{{ posts.to }}件を表示
-      </p>
-    </main>
+    </div>
   </div>
 </template>
