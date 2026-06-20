@@ -25,15 +25,24 @@ class SocialAuthController extends Controller
                 ->user();
 
             // 既存ユーザーを検索、なければ作成
-            $user = User::updateOrCreate(
-                ['email' => $googleUser->getEmail()],
-                [
-                    'name'              => $googleUser->getName(),
-                    'google_id'         => $googleUser->getId(),
-                    'password'          => bcrypt(str()->random(24)),
-                    'email_verified_at' => now(),
-                ]
-            );
+$user = User::where('email', $googleUser->getEmail())->first();
+
+if ($user) {
+    // 既存ユーザーはgoogle_idだけ更新（パスワードは上書きしない）
+    $user->update([
+        'google_id'         => $googleUser->getId(),
+        'email_verified_at' => now(),
+    ]);
+} else {
+    // 新規ユーザーは作成
+    $user = User::create([
+        'name'              => $googleUser->getName(),
+        'email'             => $googleUser->getEmail(),
+        'google_id'         => $googleUser->getId(),
+        'password'          => bcrypt(str()->random(24)),
+        'email_verified_at' => now(),
+    ]);
+}
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
