@@ -156,7 +156,7 @@ const isOwner = computed(() => {
           </p>
 
           <!-- いいねボタン -->
-          <div class="flex items-center gap-4 mb-6">
+          <div v-if="isOwner" class="flex items-center gap-4 mb-6">
             <button
               @click="handleLike"
               :disabled="likeLoading"
@@ -171,8 +171,8 @@ const isOwner = computed(() => {
             </button>
           </div>
 
-          <!-- Xでシェア -->
-          <div class="flex items-center gap-4 mb-6">
+          <!-- Xでシェア（自分の投稿のみ） -->
+          <div v-if="isOwner" class="flex items-center gap-4 mb-6">
             <button
               @click="shareOnX"
               class="flex items-center gap-2 px-4 py-2 rounded-lg bg-black hover:bg-gray-800 text-white font-semibold text-sm transition"

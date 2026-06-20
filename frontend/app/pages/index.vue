@@ -46,25 +46,6 @@ const { isLoggedIn } = useAuth();
           </NuxtLink>
         </template>
       </div>
-
-      <!-- 特徴 -->
-      <div class="grid grid-cols-3 gap-6 max-w-2xl w-full">
-        <div class="text-center p-4 bg-white rounded-2xl shadow-sm">
-          <div class="text-3xl mb-2">📸</div>
-          <h3 class="font-semibold text-gray-700 mb-1">レシピ投稿</h3>
-          <p class="text-xs text-gray-400">写真付きでレシピを共有</p>
-        </div>
-        <div class="text-center p-4 bg-white rounded-2xl shadow-sm">
-          <div class="text-3xl mb-2">🎉</div>
-          <h3 class="font-semibold text-gray-700 mb-1">イベント</h3>
-          <p class="text-xs text-gray-400">料理イベントに参加</p>
-        </div>
-        <div class="text-center p-4 bg-white rounded-2xl shadow-sm">
-          <div class="text-3xl mb-2">❤️</div>
-          <h3 class="font-semibold text-gray-700 mb-1">いいね・コメント</h3>
-          <p class="text-xs text-gray-400">みんなと交流しよう</p>
-        </div>
-      </div>
     </div>
   </div>
 </template>

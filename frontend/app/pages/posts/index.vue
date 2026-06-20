@@ -107,7 +107,7 @@ const goToPage = async (page: number) => {
 
       <!-- ページネーション -->
       <div
-        v-if="posts?.last_page > 1"
+        v-if="posts?.last_page"
         class="flex justify-center items-center gap-2 mt-6"
       >
         <button
