@@ -70,7 +70,7 @@ const handleRegister = async () => {
       form.password,
       form.password_confirmation,
     );
-    setFlash('会員登録が完了しました！');
+    setFlash('新規登録が完了しました！');
     router.push('/posts');
   } catch (e: any) {
     const data = e?.data;
@@ -91,26 +91,8 @@ const handleRegister = async () => {
   <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
     <div class="bg-white rounded-2xl shadow p-8 w-full max-w-md">
       <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
-        🍳 会員登録
+        🍳 新規登録
       </h1>
-
-      <!-- Googleログインボタン -->
-      <button
-        @click="
-          () =>
-            (window.location.href = `${useRuntimeConfig().public.apiBase}/auth/google`)
-        "
-        class="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition mb-4 font-semibold text-gray-700"
-      >
-        <img src="https://www.google.com/favicon.ico" class="w-5 h-5" />
-        Googleで登録
-      </button>
-
-      <div class="flex items-center gap-3 mb-4">
-        <hr class="flex-1 border-gray-200" />
-        <span class="text-gray-400 text-sm">または</span>
-        <hr class="flex-1 border-gray-200" />
-      </div>
 
       <!-- お名前 -->
       <div class="mb-4">
@@ -196,7 +178,7 @@ const handleRegister = async () => {
         :disabled="loading"
         class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50"
       >
-        {{ loading ? '登録中...' : '会員登録' }}
+        {{ loading ? '登録中...' : '新規登録' }}
       </button>
 
       <p class="text-center text-sm text-gray-500 mt-4">

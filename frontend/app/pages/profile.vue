@@ -18,34 +18,6 @@ const form = reactive({
   email: '',
 });
 
-const requestSuccess = ref('');
-const requestError = ref('');
-const requestLoading = ref(false);
-
-const handleAdminRequest = async () => {
-  if (!confirm('スーパー管理者に管理者権限を申請しますか？')) return;
-  requestLoading.value = true;
-  requestSuccess.value = '';
-  requestError.value = '';
-  try {
-    const response: any = await $fetch(
-      `${config.public.apiBase}/admin-request`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${token.value}`,
-        },
-      },
-    );
-    requestSuccess.value = response.message;
-  } catch (e: any) {
-    requestError.value = '申請に失敗しました';
-  } finally {
-    requestLoading.value = false;
-  }
-};
-
 const fetchProfile = async () => {
   profile.value = await $fetch(`${config.public.apiBase}/profile`, {
     headers: {
@@ -242,45 +214,6 @@ const handleAvatarUpload = async (e: Event) => {
         >
           {{ loading ? '更新中...' : '更新する' }}
         </button>
-
-        <!-- 管理者申請 -->
-        <div
-          v-if="!profile?.is_admin"
-          class="mt-6 pt-6 border-t border-gray-100"
-        >
-          <h2 class="text-sm font-semibold text-gray-700 mb-2">
-            管理者権限の申請
-          </h2>
-          <p class="text-xs text-gray-400 mb-3">
-            イベントを作成・管理したい場合はスーパー管理者に申請できます。
-          </p>
-
-          <div
-            v-if="requestSuccess"
-            class="bg-green-50 text-green-600 rounded-lg p-3 mb-3 text-sm"
-          >
-            {{ requestSuccess }}
-          </div>
-          <div
-            v-if="requestError"
-            class="bg-red-50 text-red-600 rounded-lg p-3 mb-3 text-sm"
-          >
-            {{ requestError }}
-          </div>
-
-          <button
-            @click="handleAdminRequest"
-            :disabled="requestLoading"
-            class="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-4 py-2 rounded-lg transition text-sm disabled:opacity-50"
-          >
-            {{ requestLoading ? '申請中...' : '管理者権限を申請する' }}
-          </button>
-        </div>
-        <div v-else class="mt-6 pt-6 border-t border-gray-100">
-          <span class="text-sm text-purple-500 font-semibold"
-            >✅ 管理者権限あり</span
-          >
-        </div>
       </div>
     </main>
   </div>
