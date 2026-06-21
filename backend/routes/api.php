@@ -8,8 +8,6 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;
 
 // 認証不要

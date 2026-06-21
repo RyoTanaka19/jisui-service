@@ -19,7 +19,6 @@ class User extends Authenticatable implements CanResetPasswordContract
         'password',
         'google_id',
         'avatar_url',
-        'is_admin',
     ];
 
     protected $hidden = [
@@ -36,16 +35,6 @@ class User extends Authenticatable implements CanResetPasswordContract
         ];
     }
 
-    public function isAdmin(): bool
-    {
-        return $this->is_admin === true;
-    }
-
-    public function isSuperAdmin(): bool
-    {
-        return $this->email === env('SUPER_ADMIN_EMAIL');
-    }
-
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -59,26 +48,6 @@ class User extends Authenticatable implements CanResetPasswordContract
     public function likes()
     {
         return $this->hasMany(Like::class);
-    }
-
-    public function events()
-    {
-        return $this->belongsToMany(Event::class, 'event_participants');
-    }
-
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class)->latest();
-    }
-
-    public function sentMessages()
-    {
-        return $this->hasMany(Message::class, 'sender_id');
-    }
-
-    public function receivedMessages()
-    {
-        return $this->hasMany(Message::class, 'receiver_id')->latest();
     }
 
     public function sendPasswordResetNotification($token)

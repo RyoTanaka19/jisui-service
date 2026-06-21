@@ -15,7 +15,6 @@ class Post extends Model
         'description',
         'image_url',
         'cooking_time',
-        'servings',
     ];
 
     public function user()
